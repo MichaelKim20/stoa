@@ -19,3 +19,5 @@ export { Transaction } from './Transaction';
 export { BlockHeader } from './BlockHeader';
 export { Block } from './Block';
 export { Hash, hash, hashMulti, makeUTXOKey } from './Hash';
+export { PublicKey } from './PublicKey';
+export { Signature } from './Signature';
