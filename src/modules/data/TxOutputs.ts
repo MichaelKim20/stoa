@@ -12,6 +12,7 @@
 *******************************************************************************/
 
 import { validateJSON } from '../utils';
+import {PublicKey} from "./PublicKey";
 
 /**
  * The class that defines and parses the transaction's outputs of a block.
@@ -20,19 +21,43 @@ import { validateJSON } from '../utils';
  */
 export class TxOutputs
 {
-    value: number = 0;
-    address: string = "";
+    /**
+     * The monetary value of this output, in 1/10^7
+     */
+    public value: bigint;
 
     /**
-     * This parses JSON.
-     * @param json The object of the JSON
+     * The public key that can spend this output
      */
-    public parseJSON (json: any)
+    public address: PublicKey;
+
+    /**
+     * Constructor
+     * @param val - The monetary value
+     * @param address - The public key
+     */
+    constructor (val?: bigint, address?: PublicKey)
+    {
+        if (val != undefined)
+            this.value = val;
+        else
+            this.value = BigInt(0);
+
+        if (address != undefined)
+            this.address = address;
+        else
+            this.address = new PublicKey();
+    }
+
+    /**
+     * Reads form JSON.
+     * @param json - The JSON data
+     */
+    public fromJSON (json: any)
     {
         validateJSON(this, json);
 
-        this.value = json.value;
-
-        this.address = json.address;
+        this.value = BigInt(json.value);
+        this.address.fromString(json.address);
     }
 }

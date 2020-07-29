@@ -20,17 +20,29 @@ import { validateJSON } from '../utils';
  */
 export class BitField
 {
-    _storage: number[] = [];
+    _storage: number[];
 
     /**
-     * This parses JSON.
-     * @param json The object of the JSON
+     * Constructor
+     * @param storage
      */
-    public parseJSON (json: any)
+    constructor (storage?: number[])
+    {
+        if (storage != undefined)
+            this._storage = storage;
+        else
+            this._storage = [];
+    }
+
+    /**
+     * Reads from JSON.
+     * @param json - The JSON data
+     */
+    public fromJSON (json: any)
     {
         validateJSON(this, json);
 
-        for (let idx = 0; idx < json._storage.length; idx++)
-            this._storage.push(Number(json._storage[idx]));
+        for (let elem of json._storage)
+            this._storage.push(Number(elem));
     }
 }

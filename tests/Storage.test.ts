@@ -272,8 +272,8 @@ function TestOfValidation(doneIt: () => void)
           "enroll_sig": "0x0c48e78972e1b138a37e37ae27a01d5ebdea193088ddef2d9883446efe63086925e8803400d7b93d22b1eef5c475098ce08a5b47e8125cf6b04274cc4db34bfd"
         };
         enrollment = new Enrollment();
-        enrollment.parseJSON(json );
-        assert.strictEqual(enrollment.utxo_key, "0x210b66053c73e7bd7b27673706f0272617d09b8cda76605e91ab66ad1cc3bfc1f3f5fede91fd74bb2d2073de587c6ee495cfb0d981f03a83651b48ce0e576a1a");
+        enrollment.fromJSON(json );
+        assert.strictEqual(enrollment.utxo_key.toString(), "0x210b66053c73e7bd7b27673706f0272617d09b8cda76605e91ab66ad1cc3bfc1f3f5fede91fd74bb2d2073de587c6ee495cfb0d981f03a83651b48ce0e576a1a");
     }
     catch (err)
     {
@@ -291,7 +291,7 @@ function TestOfValidation(doneIt: () => void)
           "enroll_sig": "0x0c48e78972e1b138a37e37ae27a01d5ebdea193088ddef2d9883446efe63086925e8803400d7b93d22b1eef5c475098ce08a5b47e8125cf6b04274cc4db34bfd"
         };
         enrollment = new Enrollment();
-        enrollment.parseJSON(json );
+        enrollment.fromJSON(json );
     }
     catch (err)
     {
