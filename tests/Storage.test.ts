@@ -14,7 +14,9 @@
 import * as assert from 'assert';
 import { LedgerStorage } from '../src/modules/storage/LedgerStorage';
 import { Enrollment } from '../src/modules/data';
-import {sample_data} from "./SampleData.test";
+import {sample_data, sample_preImageInfo} from "./SampleData.test";
+import { PreImageInfo } from '../src/modules/data/PreImageInfo';
+import { Hash } from '../src/modules/common/Hash';
 
 /**
  * Run LedgerStorageTest
@@ -33,8 +35,11 @@ function runLedgerStorageTest (doneIt: () => void)
                 {
                     runValidatorsAPITest(ledger_storage, () =>
                     {
-                        ledger_storage.close();
-                        doneIt();
+                        updatePreImageTest(ledger_storage, () =>
+                        {
+                            ledger_storage.close();
+                            doneIt();
+                        });
                     });
                 });
             });
@@ -251,3 +256,86 @@ describe('LedgerStorage', () =>
         runLedgerStorageTest(doneIt);
     });
 });
+
+/**
+ *  Run the test of the update preImage
+ */
+function updatePreImageTest (ledger_storage: LedgerStorage, onDone: () => void)
+{
+    let height: number = 0;
+    ledger_storage.getEnrollments(height,
+        (rows: any[]) =>
+        {
+            ledger_storage.updatePreImage(sample_preImageInfo, (rows: any[]) =>
+            {
+                ledger_storage.getValidators(height,
+                    (rows: any[]) =>
+                    {
+                        assert.strictEqual(rows[0].preimage_distance, 6);
+                        assert.strictEqual(rows[0].preimage_hash, sample_preImageInfo.hash);
+                    },
+                    (err1: Error) =>
+                    {
+                        assert.ok(!err1, err1?.message);
+                        onDone();
+                    });
+            },
+            (err2: Error) =>
+            {
+                assert.ok(!err2, err2?.message);
+                onDone();
+            });
+
+            // Past preImage ignore Test
+            sample_preImageInfo.distance = 5;
+            ledger_storage.updatePreImage(sample_preImageInfo, (rows: any[]) =>
+            {
+                assert.strictEqual(rows.length, 0);
+                ledger_storage.getValidators(height,
+                    (rows: any[]) =>
+                    {
+                        assert.strictEqual(rows[0].preimage_distance, 6);
+                        assert.strictEqual(rows[0].preimage_hash, sample_preImageInfo.hash);
+                    },
+                    (err3: Error) =>
+                    {
+                        assert.ok(!err3, err3?.message);
+                        onDone();
+                    });
+            },
+            (err4: Error) =>
+            {
+                assert.ok(!err4, err4?.message);
+                onDone();
+            });
+
+            // Distance test out of cycle_length range Test
+            sample_preImageInfo.distance = 1008;
+            ledger_storage.updatePreImage(sample_preImageInfo, (rows: any[]) =>
+            {
+                assert.strictEqual(rows.length, 0);
+                ledger_storage.getValidators(height,
+                    (rows: any[]) =>
+                    {
+                        assert.strictEqual(rows[0].preimage_distance, 6);
+                        assert.strictEqual(rows[0].preimage_hash, sample_preImageInfo.hash);
+                        onDone();
+                    },
+                    (err5: Error) =>
+                    {
+                        assert.ok(!err5, err5?.message);
+                        onDone();
+                    });
+            },
+            (err6: Error) =>
+            {
+                assert.ok(!err6, err6?.message);
+                onDone();
+            });
+        },
+        (err7: Error) =>
+        {
+            assert.ok(!err7, err7?.message);
+            onDone();
+        });
+}

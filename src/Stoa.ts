@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import { LedgerStorage } from "./modules/storage/LedgerStorage";
 import { ValidatorData, IPreimage, IValidator } from "./modules/data/ValidatorData";
+import { Hash } from "./modules/common/Hash";
 
 class Stoa {
     public stoa: express.Application;
@@ -159,6 +160,48 @@ class Stoa {
                 {
                     console.error("Failed to store the payload of a push to the DB: " + err);
                     res.status(500).send("An error occurred while saving");
+                    return;
+                }
+            );
+        });
+
+        /**
+         * When a request is received through the `/preimage_received` handler
+         * JSON preImage data is parsed and stored on each storage.
+         */
+        this.stoa.post("/preimage_received",
+            (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+            let pre_image: any;
+            if (req.body.preimage == undefined)
+            {
+                res.status(400).send("Missing 'preImage' object in body");
+            }
+
+            try
+            {
+                if (typeof req.body.preimage === "string")
+                    pre_image = JSON.parse(req.body.block);
+                else
+                    pre_image = req.body.preimage;
+            }
+            catch(e)
+            {
+                res.status(400).send("Not a valid JSON format");
+            }
+
+            console.log(pre_image);
+
+            this.ledger_storage.updatePreImage(pre_image,
+                () =>
+                {
+                    res.status(200).send();
+                    return;
+                },
+                (err:Error) =>
+                {
+                    console.error("Failed to store the payload of a update to the DB: " + err);
+                    res.status(500).send("An error occurred while update");
                     return;
                 }
             );

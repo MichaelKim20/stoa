@@ -287,3 +287,10 @@ export const sample_data =
             ]
         }
     ];
+
+export const sample_preImageInfo =
+    {
+        "enroll_key": "0x210b66053c73e7bd7b27673706f0272617d09b8cda76605e91ab66ad1cc3bfc1f3f5fede91fd74bb2d2073de587c6ee495cfb0d981f03a83651b48ce0e576a1a",
+        "hash": "0xfb05e20321ae11b2f799a71a736fd172c5dec39540f53d6213cd1b7522898c8bfb86445c6b6db9437899f5917bb5f9c9be7358ba0ecaa37675692f7d08766950",
+        "distance": 6
+    }

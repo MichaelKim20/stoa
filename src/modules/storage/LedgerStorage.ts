@@ -14,7 +14,7 @@
 import { Hash }  from '../common/Hash'
 import { Storages } from './Storages';
 import { Block, Enrollment, Transaction,
-    TxInputs, TxOutputs } from '../data';
+    TxInputs, TxOutputs, PreImageInfo } from '../data';
 
 /**
  * The class that insert and read the ledger into the database.
@@ -245,6 +245,63 @@ export class LedgerStorage extends Storages
                     onSuccess();
             });
         });
+    }
+
+    /**
+     * Update a preImage to database
+     * @param data a PreImageInfo
+     * @param onSuccess This function will be called when
+     * the database was finished successfully
+     * @param onError This function will be called when
+     * an error occurred.
+     */
+    public updatePreImage (data: any,
+        onSuccess: (rows: any[]) => void, onError: (err: Error) => void)
+    {
+        let pre_image: PreImageInfo = new PreImageInfo();
+        try
+        {
+            pre_image.parseJSON(data);
+        }
+        catch (error)
+        {
+            onError(error);
+            return;
+        }
+
+        let sql =
+            `UPDATE validators
+            SET preimage_distance = ?,
+                preimage_hash = ?
+            WHERE
+            EXISTS
+                (SELECT 1
+                FROM enrollments
+                WHERE enrollments.utxo_key = ?
+                ORDER BY block_height DESC
+                LIMIT 1)
+            AND validators.utxo_key = ?
+            AND validators.enrolled_at =
+                (SELECT block_height
+                FROM enrollments
+                WHERE enrollments.utxo_key = ?
+                    AND ? < enrollments.cycle_length
+                ORDER BY block_height DESC
+                LIMIT 1
+                )
+            AND ? > validators.preimage_distance`;
+
+            const param = [
+                pre_image.distance,
+                pre_image.hash,
+                pre_image.enroll_key,
+                pre_image.enroll_key,
+                pre_image.enroll_key,
+                pre_image.distance,
+                pre_image.distance
+            ];
+
+        this.query(sql, param, onSuccess, onError);
     }
 
     /**
