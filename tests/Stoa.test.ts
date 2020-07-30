@@ -95,7 +95,7 @@ describe ('Test of Stoa API Server', () =>
                 assert.strictEqual(response.data.length, 3);
                 assert.strictEqual(response.data[0].address,
                     "GA3DMXTREDC4AIUTHRFIXCKWKF7BDIXRWM2KLV74OPK2OKDM2VJ235GN");
-                assert.strictEqual(response.data[0].preimage.distance, 10);
+                assert.strictEqual(response.data[0].preimage.distance, 0);
             })
             .catch((error) =>
             {
@@ -118,7 +118,7 @@ describe ('Test of Stoa API Server', () =>
                 assert.strictEqual(response.data.length, 1);
                 assert.strictEqual(response.data[0].address,
                     "GBJABNUCDJCIL5YJQMB5OZ7VCFPKYLMTUXM2ZKQJACT7PXL7EVOMEKNZ");
-                assert.strictEqual(response.data[0].preimage.distance, 10);
+                assert.strictEqual(response.data[0].preimage.distance, undefined);
             })
             .catch((error) =>
             {

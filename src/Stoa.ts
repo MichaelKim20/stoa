@@ -45,15 +45,30 @@ class Stoa {
             this.ledger_storage.getValidatorsAPI(height, null,
                 (rows: any[]) =>
                 {
-                    let out_put:Array<ValidatorData> = new Array<ValidatorData>();
                     if (rows.length)
                     {
                         let out_put:Array<ValidatorData> = new Array<ValidatorData>();
 
                         for (const row of rows)
                         {
-                            let preimage: IPreimage = {distance: row.distance,
-                                hash: (row.distance == 0 ? row.random_seed : '')} as IPreimage;
+                            let preimage_hash: string = row.preimage_hash;
+                            let preimage_distance: number = row.preimage_distance;
+                            let height_preimage = new Hash();
+
+                            // Hashing preImage
+                            if (row.preimage_hash &&
+                                row.preimage_distance >= (height - row.enrolled_at))
+                            {
+                                height_preimage.fromHexString(preimage_hash);
+                                let cnt: number = (height - row.enrolled_at);
+                                for (let i = 0; i < cnt; i++)
+                                {
+                                    height_preimage.hash(height_preimage.buffer.slice());
+                                }
+                            }
+                            let preimage: IPreimage = {distance: preimage_distance,
+                                hash: (preimage_distance == 0 ? row.random_seed
+                                    : height_preimage.toHexString())} as IPreimage;
                             var validator: ValidatorData =
                                 new ValidatorData(row.address, row.enrolled_at, row.stake, preimage);
                             out_put.push(validator);

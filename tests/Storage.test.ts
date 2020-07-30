@@ -210,7 +210,7 @@ function runValidatorsAPITest (ledger_storage: LedgerStorage, onDone: () => void
         {
             assert.strictEqual(rows[0].address, address);
             assert.strictEqual(rows[0].enrolled_at, 0);
-            assert.strictEqual(rows[0].distance, 1);
+            assert.strictEqual(rows[0].distance, undefined);
 
             ledger_storage.getValidatorsAPI(1, address,
                 (rows: any[]) =>
@@ -224,7 +224,7 @@ function runValidatorsAPITest (ledger_storage: LedgerStorage, onDone: () => void
                         (rows: any[]) =>
                         {
                             assert.strictEqual(rows.length, 3);
-                            assert.strictEqual(rows[0].distance, 1);
+                            assert.strictEqual(rows[0].distance, undefined);
                             onDone();
                         },
                         (err3: Error) =>
