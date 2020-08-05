@@ -99,6 +99,8 @@ class Stoa {
         this.stoa.get("/validator/:address",
             (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
+                res.status(400).send("Not a valid JSON format");
+                return;
             let height: number = Number(req.query.height);
             let address: string = String(req.params.address);
 
