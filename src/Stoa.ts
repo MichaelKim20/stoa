@@ -615,6 +615,7 @@ class Stoa extends WebService
 
         logger.http(`POST /block_externalized block=${req.body.block.toString()}`);
 
+        console.log(JSON.stringify(req.body.block));
         // To do
         // For a more stable operating environment,
         // it would be necessary to consider organizing the pool

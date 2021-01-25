@@ -96,6 +96,7 @@ export class AgoraClient implements FullNodeAPI
                 {
                     if (response.status == 200)
                     {
+                        console.log(JSON.stringify(response.data));
                         resolve(response.data.map((entry: any) => Block.reviver("", entry)));
                     }
                     else
