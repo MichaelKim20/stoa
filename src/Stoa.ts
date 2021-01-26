@@ -664,6 +664,9 @@ class Stoa extends WebService
             return;
         }
 
+        let tx = Transaction.reviver("", req.body.tx);
+        console.log(`tx_hash = ${hashFull(tx).toString()}`);
+
         logger.http(`POST /transaction_received tx=${req.body.tx.toString()}`);
 
         this.pending = this.pending.then(() => { return this.task({type: "transaction", data: req.body.tx}); });
