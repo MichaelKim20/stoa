@@ -302,7 +302,7 @@ describe ('Test of Stoa API Server', () =>
 
         let url = uri.toString();
         const block = Block.reviver("", sample_data2);
-        await client.post(url, {transaction: block.txs[0]})
+        await client.post(url, {tx: block.txs[0]})
         await delay(100);
     });
 
@@ -399,7 +399,7 @@ describe ('Test of the path /utxo', () =>
             .directory("transaction_received");
 
         let url = uri.toString();
-        await client.post(url, { transaction: Block.reviver("", sample_data2).txs[0] });
+        await client.post(url, { tx: Block.reviver("", sample_data2).txs[0] });
         await delay(100);
     });
 
