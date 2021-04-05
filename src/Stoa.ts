@@ -866,6 +866,8 @@ class Stoa extends WebService
             return;
         }
 
+        console.log(JSON.stringify(req.body.block));
+
         logger.http(`POST /block_externalized block=${req.body.block.toString()}`);
 
         // To do

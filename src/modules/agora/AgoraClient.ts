@@ -95,9 +95,14 @@ export class AgoraClient implements FullNodeAPI
                 .then((response: AxiosResponse) =>
                 {
                     if (response.status == 200)
+                    {
+                        console.log(JSON.stringify(response.data));
                         resolve(response.data.map((entry: any) => Block.reviver("", entry)));
+                    }
                     else
+                    {
                         reject(handleNetworkError({response: response}));
+                    }
                 })
                 .catch((reason: any) => {
                     reject(handleNetworkError(reason));
