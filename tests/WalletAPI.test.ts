@@ -11,25 +11,20 @@
 
 *******************************************************************************/
 
-import { SodiumHelper } from 'boa-sdk-ts';
 import { TestAgora, TestStoa, TestClient, sample_data, sample_data2, recovery_sample_data, delay } from './Utils';
 
 import * as assert from 'assert';
 import URI from 'urijs';
 import { URL } from 'url';
 
-describe ('Test of Stoa API for the wallet', () =>
+describe ('Test of Stoa API for the wallet', function ()
 {
+    this.timeout(10000);
     let host: string = 'http://localhost';
     let port: string = '3837';
     let stoa_server: TestStoa;
     let agora_server: TestAgora;
     let client = new TestClient();
-
-    before('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
 
     before ('Start a fake Agora', () =>
     {
@@ -64,7 +59,7 @@ describe ('Test of Stoa API for the wallet', () =>
         let url = uri.toString();
         for (let idx = 0; idx < 10; idx++)
             await client.post(url, {block: recovery_sample_data[idx]});
-        await delay(300);
+        await delay(5000);
     });
 
     it ('Test of the path /wallet/transactions/history', async () =>
@@ -224,16 +219,14 @@ describe ('Test of Stoa API for the wallet', () =>
     });
 });
 
-describe ('Test of Stoa API for the wallet with `sample_data`', () => {
+describe ('Test of Stoa API for the wallet with `sample_data`',function ()
+{
+    this.timeout(10000);
     let host: string = 'http://localhost';
     let port: string = '3837';
     let stoa_server: TestStoa;
     let agora_server: TestAgora;
     let client = new TestClient();
-
-    before('Wait for the package libsodium to finish loading', async () => {
-        await SodiumHelper.init();
-    });
 
     before('Start a fake Agora', () => {
         return new Promise<void>((resolve, reject) => {
@@ -268,7 +261,7 @@ describe ('Test of Stoa API for the wallet with `sample_data`', () => {
         await client.post(url, {block: sample_data[0]});
         await client.post(url, {block: sample_data[1]});
         await client.post(url, {block: sample_data2});
-        await delay(500);
+        await delay(5000);
     });
 
     it('Test of the path /wallet/transaction/overview with payload', async () => {

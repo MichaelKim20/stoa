@@ -12,7 +12,7 @@
 *******************************************************************************/
 
 import {
-    BitField, Block, BlockHeader, Enrollment, Height, Hash, Signature, SodiumHelper,
+    BitField, Block, BlockHeader, Enrollment, Height, Hash, Signature,
     Transaction, TxType, TxInput, TxOutput, DataPayload, PublicKey, JSBI
 } from 'boa-sdk-ts';
 import {
@@ -39,11 +39,6 @@ describe ('Test of Stoa API Server', () =>
     let stoa_server: TestStoa;
     let agora_server: TestAgora;
     let client = new TestClient();
-
-    before ('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
 
     before ('Start a fake Agora', () =>
     {
@@ -642,11 +637,6 @@ describe ('Test of the path /utxo', () =>
     let agora_server: TestAgora;
     let client = new TestClient();
 
-    before ('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
-
     before('Start a fake Agora', () => {
         return new Promise<void>((resolve, reject) => {
             agora_server = new TestAgora("2826", [], resolve);
@@ -712,7 +702,7 @@ describe ('Test of the path /utxo', () =>
 
         let url = uri.toString();
         await client.post(url, { tx: Block.reviver("", sample_data2).txs[0] });
-        await delay(100);
+        await delay(3000);
     });
 
     it ('Test of the path /utxo with pending transaction ', async () =>
@@ -752,11 +742,6 @@ describe ('Test of the path /utxo for freezing', () =>
     blocks.push(Block.reviver("", sample_data[0]));
     blocks.push(Block.reviver("", sample_data[1]));
 
-    before ('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
-
     before('Start a fake Agora', () => {
         return new Promise<void>((resolve, reject) => {
             agora_server = new TestAgora("2826", [], resolve);
@@ -789,7 +774,7 @@ describe ('Test of the path /utxo for freezing', () =>
         await client.post(url, {block: sample_data[0]});
         await client.post(url, {block: sample_data[1]});
         // Wait for the block to be stored in the database for the next test.
-        await delay(100);
+        await delay(3000);
     });
 
     it ('Create a block with a freeze transaction', async () =>
@@ -844,7 +829,7 @@ describe ('Test of the path /utxo for freezing', () =>
             .port(port)
             .directory("block_externalized");
         await client.post(uri.toString(), {block: blocks[2]});
-        await delay(100);
+        await delay(3000);
     });
 
     it ('Check the height of the block', async () => {
@@ -905,11 +890,6 @@ describe ('Test of the path /merkle_path', () =>
     let stoa_server: TestStoa;
     let agora_server: TestAgora;
     let client = new TestClient();
-
-    before ('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
 
     before ('Start a fake Agora', () =>
     {

@@ -13,7 +13,7 @@
 
 import * as assert from 'assert';
 import { LedgerStorage } from '../src/modules/storage/LedgerStorage';
-import { Block, Hash, Height, DataPayload, PreImageInfo, SodiumHelper, Endian } from 'boa-sdk-ts';
+import { Block, Hash, Height, DataPayload, PreImageInfo, Endian } from 'boa-sdk-ts';
 import { sample_data, sample_data2, sample_preImageInfo } from "./Utils";
 
 import * as fs from 'fs';
@@ -23,11 +23,6 @@ import {Config} from "../src/modules/common/Config";
 describe ('Test ledger storage and inquiry function.', () =>
 {
     let ledger_storage: LedgerStorage;
-
-    before('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
 
     before ('Prepare Storage', () =>
     {
@@ -220,11 +215,6 @@ describe ('Test for storing block data in the database', () =>
 {
     let ledger_storage: LedgerStorage;
 
-    before('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
-
     beforeEach ('Prepare Storage', async() =>
     {
         ledger_storage = await LedgerStorage.make(":memory:", 1609459200);
@@ -311,11 +301,6 @@ describe ('Tests that sending a pre-image', () =>
     let ledger_storage: LedgerStorage;
     const height = new Height("0");
 
-    before('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
-
     before ('Start sending a pre-image', async () =>
     {
         ledger_storage = await LedgerStorage.make(":memory:", 1609459200);
@@ -376,11 +361,6 @@ describe ('Tests that sending a pre-image', () =>
 describe ('Tests storing transaction pools of a transaction', () =>
 {
     let ledger_storage: LedgerStorage;
-
-    before('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
 
     before ('Preparation the ledgerStorage', () =>
     {

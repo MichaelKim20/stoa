@@ -13,7 +13,7 @@
 *******************************************************************************/
 
 import { AgoraClient } from '../src/modules/agora/AgoraClient';
-import { Block, Height, SodiumHelper, Utils } from 'boa-sdk-ts';
+import { Block, Height, Utils } from 'boa-sdk-ts';
 import { TestAgora, TestStoa, TestClient, delay, recovery_sample_data } from './Utils'
 
 import * as assert from 'assert';
@@ -62,19 +62,15 @@ class TestRecoveryStoa extends TestStoa
     }
 }
 
-describe ('Test of Recovery', () =>
+describe ('Test of Recovery', function ()
 {
+    this.timeout(10000);
     const agora_addr: URL = new URL('http://localhost:2820');
     const stoa_addr: URL = new URL('http://localhost:3837/');
     let agora_node: TestAgora;
     let stoa_server: TestRecoveryStoa;
 
     let client = new TestClient();
-
-    before('Wait for the package libsodium to finish loading', async () =>
-    {
-        await SodiumHelper.init();
-    });
 
     // Changed test agora to run only once.
     before ('Start TestAgora', (doneIt: () => void) =>
