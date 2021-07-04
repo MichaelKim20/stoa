@@ -11,15 +11,28 @@
 
 *******************************************************************************/
 
-import { Utils } from "boa-sdk-ts";
-
 import { ArgumentParser } from "argparse";
 import extend from "extend";
 import fs from "fs";
 import ip from "ip";
 import yaml from "js-yaml";
 import path from "path";
+import * as process from "process";
 import { URL } from "url";
+
+/**
+ * Gets the path to where the execution command was entered for this process.
+ */
+export function getInitCWD(): string {
+    // Get the working directory the user was in when the process was started,
+    // as opposed to the `cwd` exposed by node which is the program's path.
+    // Try to use `INIT_CWD` which is provided by npm, and fall back to
+    // `PWD` otherwise.
+    // See also: https://github.com/npm/cli/issues/2033
+    if (process.env.INIT_CWD !== undefined) return process.env.INIT_CWD;
+    if (process.env.PWD !== undefined) return process.env.PWD;
+    return process.cwd();
+}
 
 /**
  * Main config
@@ -60,7 +73,7 @@ export class Config implements IConfig {
      * @param config_file The file name of configuration
      */
     public readFromFile(config_file: string) {
-        let config_content = fs.readFileSync(path.resolve(Utils.getInitCWD(), config_file), "utf8");
+        let config_content = fs.readFileSync(path.resolve(getInitCWD(), config_file), "utf8");
         this.readFromString(config_content);
     }
 
@@ -88,7 +101,7 @@ export class Config implements IConfig {
         });
         let args = parser.parse_args();
 
-        const configPath = path.resolve(Utils.getInitCWD(), args.config);
+        const configPath = path.resolve(getInitCWD(), args.config);
         if (!fs.existsSync(configPath)) {
             console.error(`Config file '${configPath}' does not exists`);
             process.exit(1);
@@ -307,7 +320,7 @@ export class LoggingConfig implements ILoggingConfig {
      */
     constructor() {
         const defaults = LoggingConfig.defaultValue();
-        this.folder = path.resolve(Utils.getInitCWD(), defaults.folder);
+        this.folder = path.resolve(getInitCWD(), defaults.folder);
         this.level = defaults.level;
         this.console = defaults.console;
         this.database = defaults.database;
@@ -319,7 +332,7 @@ export class LoggingConfig implements ILoggingConfig {
      * @param config The object of ILoggingConfig
      */
     public readFromObject(config: ILoggingConfig) {
-        if (config.folder) this.folder = path.resolve(Utils.getInitCWD(), config.folder);
+        if (config.folder) this.folder = path.resolve(getInitCWD(), config.folder);
         if (config.level) this.level = config.level;
         if (config.console !== undefined) this.console = config.console;
         if (config.database !== undefined) this.database = config.database;
@@ -331,7 +344,7 @@ export class LoggingConfig implements ILoggingConfig {
      */
     public static defaultValue(): ILoggingConfig {
         return {
-            folder: path.resolve(Utils.getInitCWD(), "logs/"),
+            folder: path.resolve(getInitCWD(), "logs/"),
             level: "info",
             console: false,
             database: false,

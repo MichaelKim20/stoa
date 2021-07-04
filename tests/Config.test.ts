@@ -11,9 +11,10 @@
 
  *******************************************************************************/
 
-import { Config } from "../src/modules/common/Config";
+import { Config, getInitCWD } from "../src/modules/common/Config";
 
 import * as assert from "assert";
+import path from "path";
 
 describe("Test of Config", () => {
     it("Test parsing the settings of a string", () => {
@@ -44,7 +45,7 @@ describe("Test of Config", () => {
         assert.strictEqual(config.database.database, "stoa");
         assert.strictEqual(config.database.port.toString(), "3306");
         assert.strictEqual(config.database.password.toString(), "12345678");
-        assert.strictEqual(config.logging.folder, "/stoa/logs");
+        assert.strictEqual(config.logging.folder, path.resolve(getInitCWD(), "/stoa/logs/"));
         assert.strictEqual(config.logging.level, "debug");
         assert.strictEqual(config.consensus.genesis_timestamp, 1609459200);
     });
