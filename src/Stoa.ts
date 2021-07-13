@@ -1347,11 +1347,6 @@ class Stoa extends WebService {
         this.ledger_storage
             .getWalletTransactionsPending(address)
             .then((rows: any[]) => {
-                if (!rows.length) {
-                    res.status(204).send(`No pending transactions. address': (${address})`);
-                    return;
-                }
-
                 let pending_array: Array<IPendingTxs> = [];
                 for (const row of rows) {
                     let tx = {
